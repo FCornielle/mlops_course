@@ -2,10 +2,12 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "workspaceName": {
+    "baseName": {
       "type": "string",
+      "maxLength": 10,
+      "minLength": 3,
       "metadata": {
-        "description": "Name of the Azure Machine Learning workspace."
+        "description": "The base name to use as prefix to create all the resources."
       }
     },
     "location": {
@@ -15,23 +17,14 @@
         "description": "Location for all resources."
       }
     },
-<<<<<<< HEAD
     "workspace": {
       "type": "string",
       "metadata": {
         "description": "Name of the Azure ML workspace to create."
-=======
-    "storageAccountName": {
-      "type": "string",
-      "defaultValue": "[concat('st', uniqueString(resourceGroup().id))]",
-      "metadata": {
-        "description": "Name for the storage account."
->>>>>>> 61ca7ca48cfba4b22a32d92e999baf0439696f31
       }
     },
-    "keyVaultName": {
+    "keyvault": {
       "type": "string",
-<<<<<<< HEAD
       "defaultValue": "[toLower(concat(parameters('baseName'), '-kv-', uniqueString(resourceGroup().id)))]",
       "metadata": {
         "description": "Globally unique name for Key Vault."
@@ -42,37 +35,20 @@
       "defaultValue": "[toLower(concat(parameters('baseName'), 'sa', uniqueString(resourceGroup().id)))]",
       "metadata": {
         "description": "Globally unique name for Storage Account."
-=======
-      "defaultValue": "[concat('kv', uniqueString(resourceGroup().id))]",
-      "metadata": {
-        "description": "Name for the Key Vault."
->>>>>>> 61ca7ca48cfba4b22a32d92e999baf0439696f31
       }
     },
-    "applicationInsightsName": {
+    "appInsights": {
       "type": "string",
-<<<<<<< HEAD
       "defaultValue": "[toLower(concat(parameters('baseName'), '-ai-', uniqueString(resourceGroup().id)))]",
       "metadata": {
         "description": "Globally unique name for Application Insights."
-=======
-      "defaultValue": "[concat('ai', uniqueString(resourceGroup().id))]",
-      "metadata": {
-        "description": "Name for Application Insights."
->>>>>>> 61ca7ca48cfba4b22a32d92e999baf0439696f31
       }
     },
-    "containerRegistryName": {
+    "acr": {
       "type": "string",
-<<<<<<< HEAD
       "defaultValue": "[toLower(concat(parameters('baseName'), 'acr', uniqueString(resourceGroup().id)))]",
       "metadata": {
         "description": "Globally unique name for Azure Container Registry."
-=======
-      "defaultValue": "[concat('acr', uniqueString(resourceGroup().id))]",
-      "metadata": {
-        "description": "Name for Azure Container Registry."
->>>>>>> 61ca7ca48cfba4b22a32d92e999baf0439696f31
       }
     },
     "sku": {
@@ -80,11 +56,7 @@
       "defaultValue": "Basic",
       "allowedValues": ["Basic", "Enterprise"],
       "metadata": {
-<<<<<<< HEAD
         "description": "SKU tier for the Azure ML workspace."
-=======
-        "description": "SKU tier for the AML workspace."
->>>>>>> 61ca7ca48cfba4b22a32d92e999baf0439696f31
       }
     }
   },
@@ -92,37 +64,16 @@
     {
       "type": "Microsoft.Storage/storageAccounts",
       "apiVersion": "2021-01-01",
-<<<<<<< HEAD
       "name": "[parameters('storageAccount')]",
       "location": "[parameters('location')]",
       "sku": { "name": "Standard_LRS" },
       "kind": "StorageV2",
       "properties": { "supportsHttpsTrafficOnly": true }
-=======
-      "name": "[parameters('storageAccountName')]",
-      "location": "[parameters('location')]",
-      "sku": { "name": "Standard_LRS" },
-      "kind": "StorageV2",
-      "properties": {
-        "encryption": {
-          "services": {
-            "blob": { "enabled": true },
-            "file": { "enabled": true }
-          },
-          "keySource": "Microsoft.Storage"
-        },
-        "supportsHttpsTrafficOnly": true
-      }
->>>>>>> 61ca7ca48cfba4b22a32d92e999baf0439696f31
     },
     {
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2019-09-01",
-<<<<<<< HEAD
       "name": "[parameters('keyvault')]",
-=======
-      "name": "[parameters('keyVaultName')]",
->>>>>>> 61ca7ca48cfba4b22a32d92e999baf0439696f31
       "location": "[parameters('location')]",
       "properties": {
         "tenantId": "[subscription().tenantId]",
@@ -133,11 +84,7 @@
     {
       "type": "Microsoft.Insights/components",
       "apiVersion": "2018-05-01-preview",
-<<<<<<< HEAD
       "name": "[parameters('appInsights')]",
-=======
-      "name": "[parameters('applicationInsightsName')]",
->>>>>>> 61ca7ca48cfba4b22a32d92e999baf0439696f31
       "location": "[parameters('location')]",
       "kind": "web",
       "properties": { "Application_Type": "web" }
@@ -145,11 +92,7 @@
     {
       "type": "Microsoft.ContainerRegistry/registries",
       "apiVersion": "2019-05-01",
-<<<<<<< HEAD
       "name": "[parameters('acr')]",
-=======
-      "name": "[parameters('containerRegistryName')]",
->>>>>>> 61ca7ca48cfba4b22a32d92e999baf0439696f31
       "location": "[parameters('location')]",
       "sku": { "name": "Standard" },
       "properties": { "adminUserEnabled": true }
@@ -157,15 +100,10 @@
     {
       "type": "Microsoft.MachineLearningServices/workspaces",
       "apiVersion": "2020-03-01",
-<<<<<<< HEAD
       "name": "[parameters('workspace')]",
-=======
-      "name": "[parameters('workspaceName')]",
->>>>>>> 61ca7ca48cfba4b22a32d92e999baf0439696f31
       "location": "[parameters('location')]",
       "identity": { "type": "SystemAssigned" },
       "dependsOn": [
-<<<<<<< HEAD
         "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccount'))]",
         "[resourceId('Microsoft.KeyVault/vaults', parameters('keyvault'))]",
         "[resourceId('Microsoft.Insights/components', parameters('appInsights'))]",
@@ -178,38 +116,13 @@
         "applicationInsights": "[resourceId('Microsoft.Insights/components', parameters('appInsights'))]",
         "containerRegistry": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('acr'))]",
         "sku": { "name": "[parameters('sku')]", "tier": "[parameters('sku')]" }
-=======
-        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
-        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
-        "[resourceId('Microsoft.Insights/components', parameters('applicationInsightsName'))]",
-        "[resourceId('Microsoft.ContainerRegistry/registries', parameters('containerRegistryName'))]"
-      ],
-      "identity": { "type": "SystemAssigned" },
-      "properties": {
-        "friendlyName": "[parameters('workspaceName')]",
-        "storageAccount": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
-        "keyVault": "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
-        "applicationInsights": "[resourceId('Microsoft.Insights/components', parameters('applicationInsightsName'))]",
-        "containerRegistry": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('containerRegistryName'))]",
-        "sku": {
-          "name": "[parameters('sku')]",
-          "tier": "[parameters('sku')]"
-        }
->>>>>>> 61ca7ca48cfba4b22a32d92e999baf0439696f31
       }
     }
   ],
   "outputs": {
     "workspaceName": {
       "type": "string",
-<<<<<<< HEAD
       "value": "[parameters('workspace')]"
     }
   }
 }
-=======
-      "value": "[parameters('workspaceName')]"
-    }
-  }
-}
->>>>>>> 61ca7ca48cfba4b22a32d92e999baf0439696f31
