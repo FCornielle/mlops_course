@@ -25,28 +25,28 @@
     },
     "keyvault": {
       "type": "string",
-      "defaultValue": "[toLower(concat(parameters('baseName'), '-kv-', uniqueString(resourceGroup().id)))]",
+      "defaultValue": "[toLower(concat(parameters('baseName'), 'kv', substring(uniqueString(resourceGroup().id), 0, 6)))]",
       "metadata": {
-        "description": "Globally unique name for Key Vault."
+        "description": "Globally unique name for Key Vault (max 24 chars)."
       }
     },
     "storageAccount": {
       "type": "string",
-      "defaultValue": "[toLower(concat(parameters('baseName'), 'sa', uniqueString(resourceGroup().id)))]",
+      "defaultValue": "[toLower(concat(parameters('baseName'), 'sa', substring(uniqueString(resourceGroup().id), 0, 6)))]",
       "metadata": {
         "description": "Globally unique name for Storage Account."
       }
     },
     "appInsights": {
       "type": "string",
-      "defaultValue": "[toLower(concat(parameters('baseName'), '-ai-', uniqueString(resourceGroup().id)))]",
+      "defaultValue": "[toLower(concat(parameters('baseName'), 'ai', substring(uniqueString(resourceGroup().id), 0, 6)))]",
       "metadata": {
         "description": "Globally unique name for Application Insights."
       }
     },
     "acr": {
       "type": "string",
-      "defaultValue": "[toLower(concat(parameters('baseName'), 'acr', uniqueString(resourceGroup().id)))]",
+      "defaultValue": "[toLower(concat(parameters('baseName'), 'acr', substring(uniqueString(resourceGroup().id), 0, 6)))]",
       "metadata": {
         "description": "Globally unique name for Azure Container Registry."
       }
