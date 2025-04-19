@@ -12,24 +12,8 @@ stages:
     displayName: Provision Dev resources
     pool:
       vmImage: 'ubuntu-latest'
+    timeoutInMinutes: 0
     steps:
-    - task: Bash@3
-      name: GenParams
-      displayName: Generate ARM parameters file
-      inputs:
-        targetType: 'inline'
-        script: |
-          cat <<EOF > $(Build.SourcesDirectory)/environment_setup/cloud-environment.parameters.json
-          {
-            "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-            "contentVersion": "1.0.0.0",
-            "parameters": {
-              "workspace":        { "value": "$(WORKSPACE_NAME)" },
-              "location":         { "value": "$(LOCATION)" },
-              "baseName":         { "value": "$(BASE_NAME)" }
-            }
-          }
-          EOF
     - task: AzureResourceGroupDeployment@2
       displayName: Deploy OH resources to Azure
       inputs:
@@ -41,3 +25,4 @@ stages:
         csmFile: '$(Build.SourcesDirectory)/environment_setup/cloud-environment.json'
         csmParametersFile: '$(Build.SourcesDirectory)/environment_setup/cloud-environment.parameters.json'
         deploymentMode: 'Incremental'
+      displayName: 'Deploy OH resources to Azure'
