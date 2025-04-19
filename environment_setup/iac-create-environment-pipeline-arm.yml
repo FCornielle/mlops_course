@@ -12,12 +12,9 @@ stages:
     displayName: Provision Dev resources
     pool:
       vmImage: 'ubuntu-latest'
-    timeoutInMinutes: 0
-
     steps:
-    # 1) Generar dinámicamente parámetros para la plantilla ARM
     - task: Bash@3
-      name: GenArmParams
+      name: GenParams
       displayName: Generate ARM parameters file
       inputs:
         targetType: 'inline'
@@ -27,18 +24,12 @@ stages:
             "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
             "contentVersion": "1.0.0.0",
             "parameters": {
-              "workspaceName":  { "value": "$(WORKSPACE_NAME)" },
-              "location":       { "value": "$(LOCATION)" },
-              "storageAccountName":     { "value": "$(BASE_NAME)sa" },
-              "keyVaultName":           { "value": "$(BASE_NAME)-kv" },
-              "applicationInsightsName":{ "value": "$(BASE_NAME)-ai" },
-              "containerRegistryName":  { "value": "$(BASE_NAME)acr" },
-              "sku":          { "value": "basic" }
+              "workspace":        { "value": "$(WORKSPACE_NAME)" },
+              "location":         { "value": "$(LOCATION)" },
+              "baseName":         { "value": "$(BASE_NAME)" }
             }
           }
           EOF
-
-    # 2) Desplegar usando la plantilla + archivo de parámetros
     - task: AzureResourceGroupDeployment@2
       displayName: Deploy OH resources to Azure
       inputs:
